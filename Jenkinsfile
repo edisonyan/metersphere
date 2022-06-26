@@ -10,6 +10,22 @@ pipeline {
         IMAGE_PREFIX = 'registry.cn-qingdao.aliyuncs.com/metersphere'
     }
     stages {
+        stage('Checkout') {
+            steps {
+                checkout([
+                    $class: 'GitSCM', 
+                    branches: scm.branches, 
+                    extensions: [[
+                    $class: 'SubmoduleOption', 
+                    disableSubmodules: false, 
+                    parentCredentials: true, 
+                    recursiveSubmodules: true, 
+                    reference: '', 
+                    trackingSubmodules: false
+                    ]], 
+                ])
+            }
+        }
         stage('Build/Test') {
             steps {
                 configFileProvider([configFile(fileId: 'metersphere-maven', targetLocation: 'settings.xml')]) {
